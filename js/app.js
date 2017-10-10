@@ -1,14 +1,32 @@
+//reset the deck at the begining of the game
+resetCards();
 /*
- * Create a list that holds all of your cards
+ * reset the deck by creating and shuffling a new deck of cards
  */
+function resetCards() {
+    //cards array
+    let allCards = [];
+    //grab the card element
+    let cards = document.getElementsByClassName('card');
+    //add cards one by one to the array
+    for(let index = 0; index < cards.length; index++) {
+        allCards.push(cards[index]);
+    }
 
+    //grab the card deck
+    let deck = document.getElementsByClassName('deck')[0];
+    //clear the cards from the deck
+    deck.innerHTML = '';
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
+    //shuffle the cards
+    let shuffledCards = shuffle(allCards);
+
+    //add each card's HTML to the page
+    shuffledCards.forEach(function(card) {
+        deck.appendChild(card);
+    });
+
+}//function createCards()
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -24,7 +42,6 @@ function shuffle(array) {
 
     return array;
 }
-
 
 /*
  * set up the event listener for a card. If a card is clicked:
