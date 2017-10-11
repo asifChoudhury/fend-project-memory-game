@@ -1,3 +1,9 @@
+//grab the card element
+let cards = document.getElementsByClassName('card');
+
+//grab the card deck
+let deck = document.getElementsByClassName('deck')[0];
+
 //reset the deck at the begining of the game
 resetCards();
 /*
@@ -6,15 +12,18 @@ resetCards();
 function resetCards() {
     //cards array
     let allCards = [];
+
     //grab the card element
-    let cards = document.getElementsByClassName('card');
+    // let cards = document.getElementsByClassName('card');
+
     //add cards one by one to the array
     for(let index = 0; index < cards.length; index++) {
         allCards.push(cards[index]);
     }
 
     //grab the card deck
-    let deck = document.getElementsByClassName('deck')[0];
+    // let deck = document.getElementsByClassName('deck')[0];
+
     //clear the cards from the deck
     deck.innerHTML = '';
 
@@ -25,7 +34,6 @@ function resetCards() {
     shuffledCards.forEach(function(card) {
         deck.appendChild(card);
     });
-
 }//function createCards()
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -53,3 +61,9 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+//logic for the game
+function play() {
+
+}
+
