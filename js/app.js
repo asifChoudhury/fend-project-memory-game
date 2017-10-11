@@ -34,6 +34,9 @@ function resetCards() {
     shuffledCards.forEach(function(card) {
         deck.appendChild(card);
     });
+
+    //start the game
+    play();
 }//function createCards()
 
 // Shuffle function from http://stackoverflow.com/a/2450976
