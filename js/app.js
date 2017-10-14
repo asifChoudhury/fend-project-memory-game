@@ -1,49 +1,60 @@
-// grab the card element
-let cards = document.getElementsByClassName('card');
+let cards = document.getElementsByClassName('card'); // grab the card element
+let deck = document.getElementsByClassName('deck')[0]; // grab the card deck
+let movesClass = document.getElementsByClassName('moves')[0]; // grab the moves class
+let stars = document.getElementsByClassName('fa-star'); // grab the fa-stars class
+const restart = document.getElementsByClassName('restart')[0]; // grab the restart class
 
-// grab the card deck
-let deck = document.getElementsByClassName('deck')[0];
+let moves = 0; // track the number of moves
+let numMatch = 0; // track the number of matches
 
-// track the number of moves
-let moves = 0;
+let allCards = []; // cards array
+let openedCards = []; // array of opened cards
 
-// reset the deck at the begining of the game
-resetCards();
+let length = cards.length; // number of cards
+// add cards from the DOM to an array
+for(let index = 0; index < length; index++) {
+    allCards.push(cards[index]);
+}
+
+resetCards(); // reset the deck at the begining of the game
+startGame(); // start the game
+
+// reload the game when restart button is clicked
+restart.addEventListener('click', function(e) {
+    restartGame();
+});
 
 /*
  * reset the deck by creating and shuffling a new deck of cards
  */
 function resetCards() {
-    // cards array
-    let allCards = [];
+    deck.innerHTML = ''; //clear the cards from the deck
 
-    // add cards one by one to the array
-    for(let index = 0; index < cards.length; index++) {
-        allCards.push(cards[index]);
+    moves = 0; // reset moves counter
+    numMatch = 0; // reset the number of matches
+
+    // remove the color from the stars
+    let numElements = stars.length;
+    for(let i = 0; i < numElements; i++) {
+        stars[i].classList.remove('color-star');
     }
+    // hide the cards if open
+    // for(let i = 0; i < length; i++) {
+    //     cards[i].classList.remove('open', 'show', 'match', 'animate-match');
+    // }
 
-    //clear the cards from the deck
-    deck.innerHTML = '';
+    movesClass.innerHTML = moves; // display the moves counter
 
-    // reset moves counter
-    moves = 0;
-
-    // display the moves counter
-    document.getElementsByClassName('moves')[0].innerHTML = moves;
-
-    // shuffle the cards
-    let shuffledCards = shuffle(allCards);
-
+    let shuffledCards = shuffle(allCards); // shuffle the cards
     // add each card's HTML to the page
     shuffledCards.forEach(function(card) {
         deck.appendChild(card);
     });
+}
 
-    // start the game
-    play();
-}// function createCards()
-
-// Shuffle function from http://stackoverflow.com/a/2450976
+/*
+ * Shuffle function from http://stackoverflow.com/a/2450976
+ */
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -59,41 +70,151 @@ function shuffle(array) {
 }
 
 /*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
+ * logic for the game
  */
+function startGame() {
+    //let count = 0;
 
-// logic for the game
-function play() {
     // handle user's click
     deck.addEventListener('click', function(e) {
-        // display the card's symbol
-        displayCardSymbol(e.target);
+        if(!e.target.classList.contains('open')) { // prevent user from clicking the same card twice
+            displayCardSymbol(e.target); // display the card's symbol
+            addToOpenList(e.target); // add the opened card to an array of opened cards
 
-        // add the opened card to an array of opened cards
-        addToOpenList(e.target);
+            // if there's already another card in the list, compare them
+            if (openedCards.length == 2) {
+                let card1 = openedCards[0]; // the card that's already on the list
+                let card2 = openedCards[1]; // the card just selected
 
-        // if the cards do match, lock the cards in the open position
-        if(match) {
-            lockCards(e.target);
-        } else { // if the cards do not match, remove the cards from the list and hide the card's symbol
-            removeFromOpenList(e.target);
-            hideSymbol(e.target);
+                // if the cards do match, lock the cards in the open position
+                if(card1.children[0].classList.item(1) === card2.children[0].classList.item(1)) {
+                    // add animation when there's a match
+                    addClass(card1, card2, 'match')
+                    addClass(card1, card2, 'animate-match');
+
+                    clearList(); // clear the list of opened cards
+                    numMatch++; // increment the number of matches
+
+                } else { // if the cards do not match, remove the cards from the list and hide the card's symbol
+                    setTimeout(function(){
+                        addClass(card1, card2, 'animate-mismatch'); // add animation when there's a mismatch
+
+                        // hide the cards
+                        removeClass(card1, card2, 'open');
+                        removeClass(card1, card2, 'show');
+                    }, 300);
+
+                    setTimeout(function(){
+                        clearList(); // remove the list of opened cards
+                        removeClass(card1, card2, 'animate-mismatch'); // once animation is completed, remove the class from the cards
+
+                    }, 1000);
+                }
+
+                incrementMovesAndDisplay(); // increment the move counter and display it on the page
+            }
+
+            // if all cards matched, display congratulatory message
+            if(allCardsMatched()) {
+                let numStars = assignStars();
+
+                // color the stars achieved
+                for(let i = 0; i < numStars; i++) {
+                    stars[i].classList.add('color-star');
+                }
+
+                //display a message with the final score
+                setTimeout(function(){
+                    alert('Congratulations! You won!' + '\n' + 'With ' + moves + ' moves and ' + numStars + ' Stars.' + '\n' + 'Woooooo!');
+                }, 500);
+
+                // restart the game after 1s
+                setTimeout(function(){
+                    restartGame();
+                }, 1000);
+            }
         }
-
-        // increment the move counter and display it on the page
-        incrementMoves();
-
-        if(allCardsMatched()) {
-            //display a message with the final score
-
-        }
-
     });
+}
+
+/*
+ * display the selected card's symbol
+ */
+function displayCardSymbol(card) {
+    card.classList.add('card', 'open', 'show');
+}
+
+/*
+ * add the opened card to an array of opened cards
+ */
+function addToOpenList(card) {
+    openedCards.push(card);
+}
+
+/*
+ * clear the list of opened cards
+ */
+function clearList() {
+    openedCards.length = 0;
+}
+
+/*
+ * add css classes
+ */
+function addClass(card1, card2, classToAdd) {
+    card1.classList.add(classToAdd);
+    card2.classList.add(classToAdd);
+}
+
+/*
+ * remove css classes
+ */
+function removeClass(card1, card2, classToRemove) {
+    card1.classList.remove(classToRemove);
+    card2.classList.remove(classToRemove);
+}
+
+/*
+ * increment the move counter and display it on the page
+ */
+function incrementMovesAndDisplay() {
+    moves++;
+    movesClass.innerHTML = moves;
+}
+
+/*
+ * return true if all cards are matched
+ */
+function allCardsMatched() {
+    // there're 16 cards in total, so there're 8 matches possible. The game finishes when ther're 8 matches.
+    if(numMatch === 8) {
+        return true;
+    }
+
+    return false;
+}
+
+/*
+ * assign number of stars based on the number of moves
+ */
+function assignStars() {
+    let numStars = 0;
+
+    // assign number of stars based on the number of moves
+    if(moves < 14) {
+        numStars = 3;
+    } else if(moves < 18) {
+        numStars = 2;
+    } else {
+        numStars = 1;
+    }
+
+    return numStars;
+}
+
+/*
+ * reload the document
+ */
+function restartGame() {
+    location.reload();
 }
