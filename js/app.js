@@ -38,10 +38,6 @@ function resetCards() {
     for(let i = 0; i < numElements; i++) {
         stars[i].classList.remove('color-star');
     }
-    // hide the cards if open
-    // for(let i = 0; i < length; i++) {
-    //     cards[i].classList.remove('open', 'show', 'match', 'animate-match');
-    // }
 
     movesClass.innerHTML = moves; // display the moves counter
 
