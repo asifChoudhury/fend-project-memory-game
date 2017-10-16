@@ -27,7 +27,6 @@ let time;
 let seconds = 0;
 let minutes = 0;
 
-startTimer(); // start the timer
 resetCards(); // reset the deck at the begining of the game
 startGame(); // start the game
 
@@ -123,6 +122,7 @@ function startGame() {
     let clickDisabled = false; // set it to false so that the first click is processed
     // handle user's click
     deck.addEventListener('click', function(e) {
+        startTimer(); // start the timer
         if(clickDisabled) { // if click is disabled, do nothing
             return;
         }
