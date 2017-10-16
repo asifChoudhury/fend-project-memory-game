@@ -203,7 +203,6 @@ function displayCardSymbol(card) {
  * add the opened card to an array of opened cards
  */
 function addToOpenList(card) {
-    console.log(openedCards);
     openedCards.push(card);
 }
 
