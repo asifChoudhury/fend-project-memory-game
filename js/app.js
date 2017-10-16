@@ -120,10 +120,13 @@ function shuffle(array) {
  * logic for the game
  */
 function startGame() {
-    //let count = 0;
-
+    let clickDisabled = false; // set it to false so that the first click is processed
     // handle user's click
     deck.addEventListener('click', function(e) {
+        if(clickDisabled) { // if click is disabled, do nothing
+            return;
+        }
+
         if(!e.target.classList.contains('open')) { // prevent user from clicking the same card twice
             displayCardSymbol(e.target); // display the card's symbol
             addToOpenList(e.target); // add the opened card to an array of opened cards
@@ -174,6 +177,17 @@ function startGame() {
                     displayStars();
                 }, 500);
             }
+
+            // disable click
+            clickDisabled = true;
+            // allow clicking after 1s
+            setTimeout(function(){
+                clickDisabled = false;
+            }, 1000);
+
+        } else {
+            // if the same card is clicked, do nothing
+            e.preventDefault();
         }
     });
 }
@@ -182,13 +196,14 @@ function startGame() {
  * display the selected card's symbol
  */
 function displayCardSymbol(card) {
-    card.classList.add('card', 'open', 'show');
+    card.classList.add('open', 'show');
 }
 
 /*
  * add the opened card to an array of opened cards
  */
 function addToOpenList(card) {
+    console.log(openedCards);
     openedCards.push(card);
 }
 
