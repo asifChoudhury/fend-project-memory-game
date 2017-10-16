@@ -89,7 +89,7 @@ h1 {
     text-align: left;
     width: 660px;
     margin-bottom: 10px;
-    padding-left: 5%;
+    /*padding-left: 5%;*/
 }
 
 .score-panel .stars {
@@ -97,6 +97,7 @@ h1 {
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
+    padding-left: 5%;
 }
 
 .score-panel .stars li {
@@ -112,6 +113,7 @@ h1 {
 
 .fa-star {
     color: white;
+    padding-left: 5px;
 }
 
 .color-star{
@@ -126,6 +128,60 @@ h1 {
     padding-left: 15%;
 }
 
+/*
+ * Modal
+ */
+#modal {
+    display: none;
+}
+
+#modal-content {
+    display: block;
+    background-color: #02ccba;
+    border: 1px solid #879e9d;
+    box-shadow: 0px 10px 40px 17px rgba(88, 64, 95, 0.5)
+    margin: 0 auto;
+    padding: 5%;
+    text-align: center;
+}
+
+.msg {
+    margin: auto;
+}
+
+#msg-congrats {
+    font-size: 2em;
+}
+
+#close {
+    float: right;
+    top: 0;
+    right: 0;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+#restart-btn {
+    background-color: #4ee6e1;
+    border: .5px solid #459630;
+    cursor: pointer;
+}
+
+#stars {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    margin: 0 5px 0 0;
+}
+
+#stars li {
+    list-style: none;
+    display: inline-block;
+}
+
+.msg-star {
+    padding-left: 5px;
+}
 /*
  * Animation
  */
