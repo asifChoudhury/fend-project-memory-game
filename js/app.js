@@ -4,6 +4,12 @@ let movesClass = document.getElementsByClassName('moves')[0]; // grab the moves 
 let stars = document.getElementsByClassName('fa-star'); // grab the fa-stars class
 const restart = document.getElementsByClassName('restart')[0]; // grab the restart class
 let timer = document.getElementById('timer');
+let modal = document.getElementById('modal');
+const close = document.getElementById('close');
+let msgTimer = document.getElementById('msg-timer');
+let msgMoves = document.getElementById('msg-moves');
+let msgStars = document.getElementsByClassName('msg-star');
+const restartBtn = document.getElementById('restart-btn');
 
 let moves = 0; // track the number of moves
 let numMatch = 0; // track the number of matches
@@ -30,11 +36,25 @@ restart.addEventListener('click', function(e) {
     restartGame();
 });
 
+// close the congratulatory message when the close button is clicked
+close.addEventListener('click', function(e) {
+    modal.style.display = 'none';
+});
+
+//
+restartBtn.addEventListener('click', function(e) {
+    restartGame();
+});
+
 /*
  *
  */
 function startTimer() {
     time = setTimeout(add, 1000);
+}
+
+function stopTimer() {
+    clearTimeout(time);
 }
 
 /*
@@ -143,22 +163,16 @@ function startGame() {
 
             // if all cards matched, display congratulatory message
             if(allCardsMatched()) {
-                let numStars = assignStars();
-
-                // color the stars achieved
-                for(let i = 0; i < numStars; i++) {
-                    stars[i].classList.add('color-star');
-                }
+                displayStars();
 
                 //display a message with the final score
                 setTimeout(function(){
-                    alert('Congratulations! You won!' + '\n' + 'With ' + moves + ' moves and ' + numStars + ' Stars.' + '\n' + 'Woooooo!');
+                    modal.style.display = 'block';
+                    msgTimer.innerHTML += "   " + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+                    stopTimer();
+                    msgMoves.innerHTML += "   " + moves;
+                    displayStars();
                 }, 500);
-
-                // restart the game after 1s
-                setTimeout(function(){
-                    restartGame();
-                }, 1000);
             }
         }
     });
@@ -228,16 +242,37 @@ function assignStars() {
     let numStars = 0;
 
     // assign number of stars based on the number of moves
-    if(moves < 14) {
+    if(moves < 16 && seconds < 45 && minutes < 1) {
         numStars = 3;
-    } else if(moves < 18) {
-        numStars = 2;
+    } else if(moves < 22 && minutes < 2) {
+        seconds += 60;
+        if(seconds < 90) {
+            numStars = 2;
+        }
     } else {
         numStars = 1;
     }
 
     return numStars;
 }
+
+/*
+ *
+ */
+function displayStars() {
+    let numStars = assignStars();
+
+    // color the stars achieved
+    for(let i = 0; i < numStars; i++) {
+        stars[i].classList.add('color-star');
+    }
+
+    // color the stars in the modal
+    for(let i = 0; i < numStars; i++) {
+        msgStars[i].classList.add('color-star');
+    }
+}
+
 
 /*
  * reload the document and reset the timer
