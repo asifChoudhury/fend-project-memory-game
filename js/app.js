@@ -3,6 +3,7 @@ let deck = document.getElementsByClassName('deck')[0]; // grab the card deck
 let movesClass = document.getElementsByClassName('moves')[0]; // grab the moves class
 let stars = document.getElementsByClassName('fa-star'); // grab the fa-stars class
 const restart = document.getElementsByClassName('restart')[0]; // grab the restart class
+let timer = document.getElementById('timer');
 
 let moves = 0; // track the number of moves
 let numMatch = 0; // track the number of matches
@@ -16,6 +17,11 @@ for(let index = 0; index < length; index++) {
     allCards.push(cards[index]);
 }
 
+let time;
+let seconds = 0;
+let minutes = 0;
+
+startTimer(); // start the timer
 resetCards(); // reset the deck at the begining of the game
 startGame(); // start the game
 
@@ -23,6 +29,31 @@ startGame(); // start the game
 restart.addEventListener('click', function(e) {
     restartGame();
 });
+
+/*
+ *
+ */
+function startTimer() {
+    time = setTimeout(add, 1000);
+}
+
+/*
+ *
+ */
+function add() {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            resetTimer();
+        }
+    }
+
+    timer.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+
+    startTimer();
+}
 
 /*
  * reset the deck by creating and shuffling a new deck of cards
@@ -209,8 +240,20 @@ function assignStars() {
 }
 
 /*
- * reload the document
+ * reload the document and reset the timer
  */
 function restartGame() {
+    resetTimer();
     location.reload();
+}
+
+/*
+ * reset the timer
+ */
+function resetTimer() {
+    timer.textContent = "00:00";
+    seconds = 0;
+    minutes = 0;
+
+    startTimer(); //start the timer again
 }
