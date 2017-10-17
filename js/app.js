@@ -40,24 +40,27 @@ close.addEventListener('click', function(e) {
     modal.style.display = 'none';
 });
 
-//
+// restart game when restart button in the modal is clicked
 restartBtn.addEventListener('click', function(e) {
     restartGame();
 });
 
 /*
- *
+ * start the timer
  */
 function startTimer() {
     time = setTimeout(add, 1000);
 }
 
+/*
+ * stop the timer
+ */
 function stopTimer() {
     clearTimeout(time);
 }
 
 /*
- *
+ * add time
  */
 function add() {
     seconds++;
@@ -65,7 +68,7 @@ function add() {
         seconds = 0;
         minutes++;
         if (minutes >= 60) {
-            resetTimer();
+            restartGame();
         }
     }
 
@@ -120,9 +123,13 @@ function shuffle(array) {
  */
 function startGame() {
     let clickDisabled = false; // set it to false so that the first click is processed
+    let isTimerOn = false; // set it to false at the begining of the game
     // handle user's click
     deck.addEventListener('click', function(e) {
-        startTimer(); // start the timer
+        if(!isTimerOn) { // if timer is not on start the timer
+            startTimer(); // start the timer
+            isTimerOn = true; // set it to true once timer is on
+        }
         if(clickDisabled) { // if click is disabled, do nothing
             return;
         }
@@ -303,6 +310,4 @@ function resetTimer() {
     timer.textContent = "00:00";
     seconds = 0;
     minutes = 0;
-
-    startTimer(); //start the timer again
 }
